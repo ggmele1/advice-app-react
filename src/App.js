@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+    state = { advice: '' };
+
+    componentDidMount() {
+        this.fetchAdvice();
+    }
+
+
+    // Method that fetched API data
+    fetchAdvice = () => {
+        axios.get('https://api.adviceslip.com/advice') // JSON API
+            .then((response) => {
+                const { advice } = response.data.slip; // destructured advice rom response.data.slip.advice 
+                this.setState({ advice }) // !IMPORTANT prop 'advice' refers to state prop. Value refers to the destructured response()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    render() {
+        const { advice } = this.state;
+        return (
+            <div className="app">
+                <h6 className="name">Giuseppe Mele</h6>
+                <div className="bg"></div>
+                <div className="card">
+                    <h1 className="heading">{advice}</h1>
+                </div>
+                <button className="btn btn-1 hover-filled-opacity" onClick={this.fetchAdvice}>
+                    <span>Give Me Advice</span>
+                </button>
+                
+            </div>
+        );
+    }
 }
 
 export default App;
